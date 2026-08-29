@@ -2,10 +2,13 @@ import { Link } from "react-router-dom";
 import { FiShoppingCart } from "react-icons/fi";
 import ThemeToggle from "./ThemeToggle";
 import useCart from "../hooks/useCart";
+import ProfileMenu from "./ProfileMenu";
+import useAuth from "../hooks/useAuth";
 
 const Navbar = () => {
 
   const { cartItems } = useCart();
+  const { user } = useAuth();
 
   return (
     <nav className="sticky top-0 z-50 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shadow-sm">
@@ -33,6 +36,7 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-4 text-slate-700 dark:text-slate-200">
+
           <Link to="/cart" className="relative">
             <FiShoppingCart size={22} />
 
@@ -44,6 +48,29 @@ const Navbar = () => {
           </Link>
 
           <ThemeToggle />
+
+          {user ? (
+            <ProfileMenu />
+          ) : (
+            <div className="flex items-center gap-3">
+
+              <Link
+                to="/login"
+                className="rounded-xl border border-blue-200 px-4 py-2 font-medium text-blue-600 transition hover:bg-blue-50"
+              >
+                Login
+              </Link>
+
+              <Link
+                to="/signup"
+                className="rounded-xl bg-linear-to-r from-blue-600 to-indigo-600 px-5 py-2 font-medium text-white transition hover:shadow-lg"
+              >
+                Sign Up
+              </Link>
+
+            </div>
+          )}
+          
         </div>
       </div>
     </nav>
