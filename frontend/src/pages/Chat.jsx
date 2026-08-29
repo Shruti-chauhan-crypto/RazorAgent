@@ -1,5 +1,18 @@
+import ChatBox from '../components/ChatBox';
+import CartPreview from '../components/CartPreview';
+
 const Chat = () => {
-  return <h1 className="text-3xl p-8">Chat Page</h1>;
+  return (
+    <section className="section-padding bg-(--bg)">
+      <div className="container-custom flex flex-col gap-8 xl:flex-row">
+        <div className="flex-1">
+          <ChatBox />
+        </div>
+
+        <CartPreview />
+      </div>
+    </section>
+  );
 };
 
 export default Chat;
