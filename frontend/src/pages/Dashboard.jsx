@@ -3,10 +3,14 @@ import RevenueChart from '../components/RevenueChart';
 import OrdersTable from '../components/OrdersTable';
 import AIInsights from '../components/AIInsights';
 import TopProducts from '../components/TopProducts';
+import useAuth from "../hooks/useAuth";
 
 import { stats } from '../data/dashboardData';
 
 const Dashboard = () => {
+
+  const { user } = useAuth();
+
   return (
     <section className="section-padding bg-(--bg)">
       <div className="container-custom space-y-10">
@@ -18,12 +22,14 @@ const Dashboard = () => {
           </p>
 
           <h1 className="mt-2 text-4xl font-bold lg:text-5xl">
-            Welcome back 👋 Merchant
+            Welcome back, {user?.name?.split(" ")[0]} 👋
           </h1>
 
           <p className="mt-3 text-(--text-secondary)">
-            Monitor AI-assisted sales, revenue, customer growth,
-            and Razorpay payments in one place.
+            Store:{" "}
+            <span className="font-medium text-blue-600">
+              {user?.storeName}
+            </span>
           </p>
         </div>
 

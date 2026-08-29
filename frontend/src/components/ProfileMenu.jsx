@@ -12,6 +12,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import useAuth from "../hooks/useAuth";
 
 const ProfileMenu = () => {
+
+  const menuRef = useRef();
+
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -25,12 +28,32 @@ const ProfileMenu = () => {
       .toUpperCase() || "M";
 
   const handleLogout = () => {
+    const confirmLogout = window.confirm(
+      "Are you sure you want to logout?"
+    );
+
+    if (!confirmLogout) return;
+
     logout();
     navigate("/login");
   };
+  
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
 
   return (
-    <div className="relative">
+    <div ref={menuRef} className="relative">
       {/* Profile Button */}
       <button
         onClick={() => setOpen(!open)}
