@@ -2,6 +2,15 @@ from fastapi import APIRouter
 
 from app.models.order import CreateOrderRequest
 from app.services.order_service import create_order, get_orders
+from app.dependencies.auth import get_current_user
+from fastapi import Depends
+
+@router.get("/")
+def fetch_orders(user=Depends(get_current_user)):
+    return {
+        "success": True,
+        "orders": get_orders()
+    }
 
 router = APIRouter(
     prefix="/orders",
@@ -24,7 +33,7 @@ def create_new_order(request: CreateOrderRequest):
 
 
 @router.get("/")
-def fetch_orders():
+def fetch_orders(user=Depends(get_current_user)):
     return {
         "success": True,
         "orders": get_orders()

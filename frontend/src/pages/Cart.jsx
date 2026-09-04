@@ -36,16 +36,6 @@ const Cart = () => {
   return (
     <section className="section-padding bg-[var(--bg)] min-h-screen">
       <div className="container-custom">
-        {/* Page Heading */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-[var(--text-primary)]">
-            Shopping Cart
-          </h1>
-
-          <p className="mt-2 text-[var(--text-secondary)]">
-            Review your items before checkout.
-          </p>
-        </div>
 
         {/* Empty Cart */}
         {cartItems.length === 0 ? (

@@ -1,269 +1,170 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FiEye, FiEyeOff, FiUser, FiMail, FiLock, FiShoppingBag } from "react-icons/fi";
-import { motion } from "framer-motion";
+import { FiMail, FiLock, FiUser } from "react-icons/fi";
+
+import { signupUser } from "../api/api";
 import useAuth from "../hooks/useAuth";
 
 const Signup = () => {
   const navigate = useNavigate();
-  const { signup } = useAuth();
+  const { login } = useAuth();
 
-  const [formData, setFormData] = useState({
+  const [form, setForm] = useState({
     name: "",
-    storeName: "",
     email: "",
     password: "",
-    confirmPassword: "",
   });
 
-  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Handle Input Change
   const handleChange = (e) => {
-    setFormData((prev) => ({
+    setForm((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  // Handle Signup
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     setError("");
 
-    const { name, storeName, email, password, confirmPassword } = formData;
-
-    if (!name || !storeName || !email || !password || !confirmPassword) {
-      setError("Please fill all the fields.");
+    if (!form.name || !form.email || !form.password) {
+      setError("Please fill all fields.");
       return;
     }
 
-    if (!email.includes("@")) {
-      setError("Please enter a valid email address.");
+    if (form.password.length < 8) {
+      setError("Password must be at least 8 characters.");
       return;
     }
 
-    if (password.length < 6) {
-      setError("Password must contain at least 6 characters.");
-      return;
+    try {
+      setLoading(true);
+
+      const data = await signupUser(form);
+
+      // Save JWT token + user
+      login(data.token, data.user);
+
+      navigate("/dashboard");
+    } catch (err) {
+      setError(
+        err.response?.data?.detail ||
+          "Signup failed. Please try again."
+      );
+    } finally {
+      setLoading(false);
     }
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-
-    signup({
-      name,
-      storeName,
-      email,
-      password,
-    });
-
-    navigate("/dashboard");
   };
 
   return (
-    <section className="min-h-screen bg-(--bg)">
-      <div className="grid min-h-screen lg:grid-cols-2">
+    <section className="min-h-screen bg-[var(--bg)] flex items-center justify-center px-4">
+      <div className="card w-full max-w-md rounded-3xl p-8 shadow-lg">
+        {/* Heading */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-[var(--text-primary)]">
+            Create Merchant Account
+          </h1>
 
-        {/* Left Branding Section */}
-        <div className="hidden lg:flex flex-col justify-center bg-linear-to-br from-blue-600 via-indigo-600 to-purple-600 px-16 text-white">
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7 }}
-          >
-            <span className="rounded-full bg-white/20 px-4 py-2 text-sm font-medium backdrop-blur-md">
-              AI Powered Commerce
-            </span>
-
-            <h1 className="mt-6 text-5xl font-bold leading-tight">
-              Join RazorAgent
-            </h1>
-
-            <p className="mt-5 text-lg text-blue-100">
-              Create your AI-powered merchant account and start selling with
-              conversational commerce powered by Razorpay.
-            </p>
-
-            <div className="mt-10 space-y-5">
-              {[
-                "🤖 AI Product Recommendations",
-                "💳 Razorpay Smart Checkout",
-                "📊 Merchant Analytics Dashboard",
-                "⚡ AI Upselling & Revenue Growth",
-              ].map((item) => (
-                <div key={item} className="flex items-center gap-3">
-                  <div className="h-2 w-2 rounded-full bg-cyan-300" />
-                  <span>{item}</span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+          <p className="mt-2 text-[var(--text-secondary)]">
+            Join RazorAgent and start growing your business.
+          </p>
         </div>
 
-        {/* Right Form Section */}
-        <div className="flex items-center justify-center px-6 py-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="card w-full max-w-md rounded-[28px] p-8"
-          >
-            {/* Logo */}
-            <div className="mb-8 text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-r from-blue-600 to-indigo-600 text-white shadow-lg">
-                <FiShoppingBag size={28} />
-              </div>
+        {/* Error Message */}
+        {error && (
+          <div className="mb-5 rounded-xl bg-red-100 px-4 py-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
+            {error}
+          </div>
+        )}
 
-              <h2 className="mt-5 text-3xl font-bold text-(--text-primary)">
-                Create Merchant Account
-              </h2>
+        {/* Signup Form */}
+        <form onSubmit={handleSubmit} className="space-y-5">
 
-              <p className="mt-2 text-sm text-(--text-secondary)">
-                Join RazorAgent and grow your business with AI.
-              </p>
+          {/* Name */}
+          <div>
+            <label className="mb-2 block text-sm font-medium">
+              Full Name
+            </label>
+
+            <div className="flex items-center rounded-xl border border-[var(--border)] px-4 py-3 focus-within:border-blue-500">
+              <FiUser className="text-xl text-[var(--text-secondary)]" />
+
+              <input
+                type="text"
+                name="name"
+                placeholder="Shruti Chauhan"
+                value={form.name}
+                onChange={handleChange}
+                className="ml-3 w-full bg-transparent outline-none"
+              />
             </div>
+          </div>
 
-            {/* Error */}
-            {error && (
-              <div className="mb-5 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-600">
-                {error}
-              </div>
-            )}
+          {/* Email */}
+          <div>
+            <label className="mb-2 block text-sm font-medium">
+              Email
+            </label>
 
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="flex items-center rounded-xl border border-[var(--border)] px-4 py-3 focus-within:border-blue-500">
+              <FiMail className="text-xl text-[var(--text-secondary)]" />
 
-              {/* Merchant Name */}
-              <div>
-                <label className="mb-2 block text-sm font-medium">
-                  Merchant Name
-                </label>
+              <input
+                type="email"
+                name="email"
+                placeholder="merchant@example.com"
+                value={form.email}
+                onChange={handleChange}
+                className="ml-3 w-full bg-transparent outline-none"
+              />
+            </div>
+          </div>
 
-                <div className="flex items-center rounded-xl border border-(--border) px-4 py-3 focus-within:border-blue-500">
-                  <FiUser className="text-slate-400" />
+          {/* Password */}
+          <div>
+            <label className="mb-2 block text-sm font-medium">
+              Password
+            </label>
 
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Shruti Chauhan"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="ml-3 w-full bg-transparent outline-none"
-                  />
-                </div>
-              </div>
+            <div className="flex items-center rounded-xl border border-[var(--border)] px-4 py-3 focus-within:border-blue-500">
+              <FiLock className="text-xl text-[var(--text-secondary)]" />
 
-              {/* Store Name */}
-              <div>
-                <label className="mb-2 block text-sm font-medium">
-                  Store Name
-                </label>
+              <input
+                type="password"
+                name="password"
+                placeholder="Minimum 8 characters"
+                value={form.password}
+                onChange={handleChange}
+                className="ml-3 w-full bg-transparent outline-none"
+              />
+            </div>
+          </div>
 
-                <div className="flex items-center rounded-xl border border-(--border) px-4 py-3 focus-within:border-blue-500">
-                  <FiShoppingBag className="text-slate-400" />
+          {/* Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-xl bg-blue-600 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:opacity-60"
+          >
+            {loading ? "Creating Account..." : "Create Account"}
+          </button>
+        </form>
 
-                  <input
-                    type="text"
-                    name="storeName"
-                    placeholder="Razor Fashion Store"
-                    value={formData.storeName}
-                    onChange={handleChange}
-                    className="ml-3 w-full bg-transparent outline-none"
-                  />
-                </div>
-              </div>
-
-              {/* Email */}
-              <div>
-                <label className="mb-2 block text-sm font-medium">
-                  Email Address
-                </label>
-
-                <div className="flex items-center rounded-xl border border-(--border) px-4 py-3 focus-within:border-blue-500">
-                  <FiMail className="text-slate-400" />
-
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="merchant@example.com"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="ml-3 w-full bg-transparent outline-none"
-                  />
-                </div>
-              </div>
-
-              {/* Password */}
-              <div>
-                <label className="mb-2 block text-sm font-medium">
-                  Password
-                </label>
-
-                <div className="flex items-center rounded-xl border border-(--border) px-4 py-3 focus-within:border-blue-500">
-                  <FiLock className="text-slate-400" />
-
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    placeholder="Minimum 6 characters"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className="ml-3 w-full bg-transparent outline-none"
-                  />
-
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="text-slate-500"
-                  >
-                    {showPassword ? <FiEyeOff /> : <FiEye />}
-                  </button>
-                </div>
-              </div>
-
-              {/* Confirm Password */}
-              <div>
-                <label className="mb-2 block text-sm font-medium">
-                  Confirm Password
-                </label>
-
-                <div className="flex items-center rounded-xl border border-(--border) px-4 py-3 focus-within:border-blue-500">
-                  <FiLock className="text-slate-400" />
-
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="confirmPassword"
-                    placeholder="Re-enter password"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    className="ml-3 w-full bg-transparent outline-none"
-                  />
-                </div>
-              </div>
-
-              {/* Button */}
-              <button
-                type="submit"
-                className="w-full rounded-xl bg-linear-to-r from-blue-600 to-indigo-600 py-3 font-semibold text-white transition hover:scale-[1.02] hover:shadow-lg"
-              >
-                Create Account
-              </button>
-            </form>
-
-            {/* Login Link */}
-            <p className="mt-6 text-center text-sm text-(--text-secondary)">
-              Already have a merchant account?{" "}
-              <Link
-                to="/login"
-                className="font-semibold text-blue-600 hover:underline"
-              >
-                Login here
-              </Link>
-            </p>
-          </motion.div>
-        </div>
+        {/* Login Link */}
+        <p className="mt-6 text-center text-sm text-[var(--text-secondary)]">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="font-semibold text-blue-600 hover:underline"
+          >
+            Login
+          </Link>
+        </p>
       </div>
     </section>
   );

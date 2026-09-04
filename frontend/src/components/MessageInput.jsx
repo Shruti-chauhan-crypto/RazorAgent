@@ -12,7 +12,7 @@ const MessageInput = ({ onSend }) => {
   };
 
   return (
-    <div className="flex items-center gap-3 rounded-2xl border border-(--border) bg-(--surface) p-3 shadow-sm">
+    <div className="flex items-center gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-3 shadow-sm">
       <input
         type="text"
         value={message}
@@ -24,7 +24,7 @@ const MessageInput = ({ onSend }) => {
 
       <button
         onClick={handleSubmit}
-        className="rounded-xl bg-linear-to-r from-blue-600 to-indigo-600 p-3 text-white transition hover:scale-105"
+        className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 p-3 text-white transition hover:scale-105"
       >
         <FiSend size={18} />
       </button>

@@ -62,12 +62,6 @@ const ChatBox = () => {
 
   return (
     <div className="card flex h-[80vh] flex-col p-6">
-      <div className="mb-5">
-        <h2 className="text-2xl font-bold">AI Shopping Assistant</h2>
-        <p className="text-sm text-slate-500">
-          Ask RazorAgent anything about products.
-        </p>
-      </div>
 
       <QuickPrompt onSelect={handleSend} />
 
