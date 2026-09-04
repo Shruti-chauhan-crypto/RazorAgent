@@ -1,5 +1,6 @@
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from jose import JWTError
 
 from app.services.jwt_service import verify_token
 
@@ -15,5 +16,8 @@ def get_current_user(
         payload = verify_token(token)
         return payload
 
-    except Exception:
-        raise HTTPException(401, "Invalid or expired token.")
+    except JWTError:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired token."
+        )
