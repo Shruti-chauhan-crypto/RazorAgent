@@ -34,7 +34,7 @@ const Dashboard = () => {
   }
 
   return (
-    <section className="section-padding bg-[var(--bg)]">
+    <section className="m-3 section-padding bg-[var(--bg)]">
       <div className="container-custom space-y-8">
 
         <BackendStatus />

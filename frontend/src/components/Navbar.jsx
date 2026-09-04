@@ -55,8 +55,8 @@ const Navbar = () => {
 
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <div className="rounded-xl bg-blue-600 p-2 text-white font-bold">
-            R
+          <div className="rounded-full h-10 w-10 bg-blue-600 py-2 px-2 text-white font-bold">
+            RA
           </div>
 
           <div>
