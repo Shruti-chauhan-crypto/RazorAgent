@@ -1,61 +1,55 @@
-import StatsCard from '../components/StatsCard';
-import RevenueChart from '../components/RevenueChart';
-import OrdersTable from '../components/OrdersTable';
-import AIInsights from '../components/AIInsights';
-import TopProducts from '../components/TopProducts';
-import useAuth from "../hooks/useAuth";
+import { useEffect, useState } from "react";
+
+import KPISection from "../components/KPISection";
+import RevenueChart from "../components/RevenueChart";
+import CategoryChart from "../components/CategoryChart";
+import TopProducts from "../components/TopProducts";
+import AIInsights from "../components/AIInsights";
 import BackendStatus from "../components/BackendStatus";
 
-import { stats } from '../data/dashboardData';
+import { getDashboardAnalytics } from "../api/api";
 
 const Dashboard = () => {
+  const [analytics, setAnalytics] = useState(null);
 
-  const { user } = useAuth();
+  useEffect(() => {
+    const loadDashboard = async () => {
+      try {
+        const data = await getDashboardAnalytics();
+        setAnalytics(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    loadDashboard();
+  }, []);
+
+  if (!analytics) {
+    return (
+      <div className="section-padding text-center">
+        Loading Dashboard...
+      </div>
+    );
+  }
 
   return (
-    <section className="section-padding bg-(--bg)">
-      <div className="container-custom space-y-10">
+    <section className="section-padding bg-[var(--bg)]">
+      <div className="container-custom space-y-8">
 
-        {/* Header */}
-        <div>
-          <p className="font-medium text-blue-600">
-            Merchant Dashboard
-          </p>
+        <BackendStatus />
 
-          <h1 className="mt-2 text-4xl font-bold lg:text-5xl">
-            Welcome back, {user?.name?.split(" ")[0]} 👋
-          </h1>
+        <KPISection kpis={analytics.kpis} />
 
-          <p className="mt-3 text-(--text-secondary)">
-            Store:{" "}
-            <span className="font-medium text-blue-600">
-              {user?.storeName}
-            </span>
-          </p>
+        <div className="grid gap-8 lg:grid-cols-2">
+          <RevenueChart data={analytics.weeklyRevenue} />
+          <CategoryChart data={analytics.categorySales} />
         </div>
 
-        {/* KPI Cards */}
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-          {stats.map((stat) => (
-            <StatsCard key={stat.id} stat={stat} />
-          ))}
-        </div>
+        <TopProducts products={analytics.topProducts} />
 
-        {/* Revenue Chart + AI Insights */}
-        <div className="grid gap-8 lg:grid-cols-[2fr_1fr]">
-          <RevenueChart />
+        <AIInsights insights={analytics.aiInsights} />
 
-          <div className="space-y-6">
-            <BackendStatus />
-            <AIInsights />
-          </div>
-        </div>
-        
-        {/* Orders */}
-        <OrdersTable />
-
-        {/* Top Products */}
-        <TopProducts />
       </div>
     </section>
   );

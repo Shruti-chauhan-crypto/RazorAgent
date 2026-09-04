@@ -1,28 +1,55 @@
-import { FiZap } from 'react-icons/fi';
-import { aiInsights } from '../data/dashboardData';
+import {
+  FiTrendingUp,
+  FiAlertTriangle,
+  FiTarget,
+  FiShoppingBag,
+} from "react-icons/fi";
 
-const AIInsights = () => {
+const icons = {
+  success: FiTrendingUp,
+  warning: FiAlertTriangle,
+  growth: FiTarget,
+  info: FiShoppingBag,
+};
+
+const colors = {
+  success: "border-green-500 bg-green-50 dark:bg-green-900/20",
+  warning: "border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20",
+  growth: "border-blue-500 bg-blue-50 dark:bg-blue-900/20",
+  info: "border-purple-500 bg-purple-50 dark:bg-purple-900/20",
+};
+
+const AIInsights = ({ insights }) => {
   return (
-    <div className="card rounded-3xl p-6">
-      <div className="mb-6 flex items-center gap-3">
-        <FiZap className="text-yellow-500 text-2xl" />
-        <h2 className="text-xl font-semibold">
-          AI Insights
-        </h2>
-      </div>
+    <div className="space-y-4">
+      <h3 className="text-xl font-bold">
+        AI Merchant Insights
+      </h3>
 
-      <div className="space-y-4">
-        {aiInsights.map((insight) => (
+      {insights.map((insight, index) => {
+        const Icon = icons[insight.type];
+
+        return (
           <div
-            key={insight}
-            className="rounded-2xl bg-blue-50 p-4 dark:bg-blue-950/30"
+            key={index}
+            className={`rounded-2xl border-l-4 p-5 ${colors[insight.type]}`}
           >
-            <p className="text-sm leading-6 text-blue-700 dark:text-blue-300">
-              🤖 {insight}
-            </p>
+            <div className="flex gap-3">
+              <Icon className="mt-1 text-xl" />
+
+              <div>
+                <h4 className="font-semibold">
+                  {insight.title}
+                </h4>
+
+                <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                  {insight.description}
+                </p>
+              </div>
+            </div>
           </div>
-        ))}
-      </div>
+        );
+      })}
     </div>
   );
 };

@@ -10,4 +10,9 @@ export const chatWithAI = async (message) => {
   return response.data;
 };
 
+export const getDashboardAnalytics = async () => {
+  const response = await api.get("/analytics/dashboard");
+  return response.data.data;
+};
+
 export default api;

@@ -1,0 +1,82 @@
+{
+  "kpis": {
+    "totalRevenue": 125430,
+    "orders": 482,
+    "customers": 356,
+    "conversionRate": 7.2
+  },
+
+  "weeklyRevenue": [
+    { "day": "Mon", "revenue": 13200 },
+    { "day": "Tue", "revenue": 15800 },
+    { "day": "Wed", "revenue": 14150 },
+    { "day": "Thu", "revenue": 17620 },
+    { "day": "Fri", "revenue": 20180 },
+    { "day": "Sat", "revenue": 24300 },
+    { "day": "Sun", "revenue": 30180 }
+  ],
+
+  "categorySales": [
+    { "category": "Sneakers", "sales": 62 },
+    { "category": "Earbuds", "sales": 18 },
+    { "category": "T-Shirts", "sales": 10 },
+    { "category": "Hoodies", "sales": 6 },
+    { "category": "Watches", "sales": 4 }
+  ],
+
+  "topProducts": [
+    {
+      "name": "Nike Court Vision White",
+      "brand": "Nike",
+      "sold": 148,
+      "revenue": 443852
+    },
+    {
+      "name": "Puma Smash White Sneakers",
+      "brand": "Puma",
+      "sold": 126,
+      "revenue": 314874
+    },
+    {
+      "name": "Campus White Running Shoes",
+      "brand": "Campus",
+      "sold": 109,
+      "revenue": 196091
+    },
+    {
+      "name": "boAt Airdopes 311 Pro",
+      "brand": "boAt",
+      "sold": 96,
+      "revenue": 182304
+    },
+    {
+      "name": "Noise Buds VS102",
+      "brand": "Noise",
+      "sold": 82,
+      "revenue": 122918
+    }
+  ],
+
+  "aiInsights": [
+    {
+      "title": "Sneakers are your top-performing category",
+      "description": "Sneakers generated 62% of total revenue this week.",
+      "type": "success"
+    },
+    {
+      "title": "Weekend sales spike detected",
+      "description": "Saturday and Sunday generated 43% of weekly revenue.",
+      "type": "info"
+    },
+    {
+      "title": "Bundle Opportunity",
+      "description": "Offer socks with sneakers to increase average order value by up to 15%.",
+      "type": "growth"
+    },
+    {
+      "title": "Low Earbuds Conversion",
+      "description": "Running a 10% discount could improve earbud sales.",
+      "type": "warning"
+    }
+  ]
+}
