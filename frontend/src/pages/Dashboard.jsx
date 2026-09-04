@@ -4,6 +4,7 @@ import OrdersTable from '../components/OrdersTable';
 import AIInsights from '../components/AIInsights';
 import TopProducts from '../components/TopProducts';
 import useAuth from "../hooks/useAuth";
+import BackendStatus from "../components/BackendStatus";
 
 import { stats } from '../data/dashboardData';
 
@@ -43,9 +44,13 @@ const Dashboard = () => {
         {/* Revenue Chart + AI Insights */}
         <div className="grid gap-8 lg:grid-cols-[2fr_1fr]">
           <RevenueChart />
-          <AIInsights />
-        </div>
 
+          <div className="space-y-6">
+            <BackendStatus />
+            <AIInsights />
+          </div>
+        </div>
+        
         {/* Orders */}
         <OrdersTable />
 

@@ -1,0 +1,55 @@
+[
+  {
+    "product_category": "sneakers",
+    "bundle_title": "Complete Your Sneaker Look",
+    "discount": 10,
+    "products": [
+      {
+        "id": 21,
+        "name": "Puma Crew Socks (Pack of 3)",
+        "brand": "Puma",
+        "price": 299,
+        "rating": 4.5,
+        "image": "https://images.puma.com/image/upload/f_auto,q_auto/global/701220870001/fnd/IND/fmt/png"
+      },
+      {
+        "id": 22,
+        "name": "Sneaker Cleaning Kit",
+        "brand": "Sneaker Lab",
+        "price": 499,
+        "rating": 4.7,
+        "image": "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519"
+      }
+    ]
+  },
+  {
+    "product_category": "earbuds",
+    "bundle_title": "Power Bundle",
+    "discount": 15,
+    "products": [
+      {
+        "id": 23,
+        "name": "boAt 10000mAh Power Bank",
+        "brand": "boAt",
+        "price": 999,
+        "rating": 4.4,
+        "image": "https://images.unsplash.com/photo-1585386959984-a41552231658"
+      }
+    ]
+  },
+  {
+    "product_category": "tshirt",
+    "bundle_title": "Complete Your Outfit",
+    "discount": 20,
+    "products": [
+      {
+        "id": 24,
+        "name": "Oversized Hoodie",
+        "brand": "Campus Sutra",
+        "price": 1499,
+        "rating": 4.6,
+        "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab"
+      }
+    ]
+  }
+]

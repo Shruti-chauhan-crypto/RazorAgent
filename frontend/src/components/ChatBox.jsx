@@ -9,34 +9,55 @@ import { initialMessages } from '../data/chatData';
 
 import ProductList from "./ProductList";
 import { products } from "../data/products";
+import { chatWithAI } from "../api/api";
+import BundleCard from "./BundleCard";
 
 const ChatBox = () => {
   const [messages, setMessages] = useState(initialMessages);
   const [typing, setTyping] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [input, setInput] = useState("");
 
-  const handleSend = (message) => {
-    const userMessage = {
-      id: Date.now(),
-      sender: 'user',
-      text: message,
-    };
+  const handleSend = async (messageText = input) => {
+    if (!messageText.trim()) return;
 
-    setMessages((prev) => [...prev, userMessage]);
-    setTyping(true);
+    setMessages((prev) => [
+      ...prev,
+      { sender: "user", text: messageText },
+    ]);
 
-    setTimeout(() => {
+    setInput("");
+    setLoading(true);
+
+    try {
+      const data = await chatWithAI(messageText);
+
       setMessages((prev) => [
         ...prev,
         {
-          id: Date.now() + 1,
-          sender: 'bot',
-          text: `I found these recommendations for "${message}".`,
-          products,
+          sender: "ai",
+          text: data.reply,
+          products: data.products,
+          bundle: data.bundle,
         },
       ]);
+    } catch (error) {
+      const message =
+        error.response?.data?.detail || "Something went wrong.";
 
-      setTyping(false);
-    }, 1500);
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: "ai",
+          text: message.includes("429")
+            ? "Gemini is temporarily busy. Showing recommendations from our catalog instead."
+            : message,
+        },
+      ]);
+    } finally {
+      setLoading(false);
+    }
+    
   };
 
   return (
@@ -51,18 +72,30 @@ const ChatBox = () => {
       <QuickPrompt onSelect={handleSend} />
 
       <div className="my-6 flex-1 space-y-5 overflow-y-auto pr-2">
-        {messages.map((message) => (
-        <div key={message.id} className="space-y-4">
+        {messages.map((message, index) => (
+          <div key={index} className="space-y-4">
             <ChatBubble sender={message.sender} text={message.text} />
-
-            {message.products && <ProductList products={message.products} />}
-        </div>
+            {message.products && <ProductList products={message.products}/>}
+            {message.bundle &&  <BundleCard bundle={message.bundle} />}
+          </div>
         ))}
+
+        {loading && (
+          <div className="flex justify-start mt-3">
+            <div className="rounded-2xl bg-blue-100 dark:bg-blue-950/40 px-4 py-3 text-blue-600 dark:text-blue-300">
+              🤖 RazorAgent is thinking...
+            </div>
+          </div>
+        )}
 
         {typing && <TypingIndicator />}
       </div>
 
-      <MessageInput onSend={handleSend} />
+      <MessageInput
+        input={input}
+        setInput={setInput}
+        onSend={handleSend}
+      />
     </div>
   );
 };

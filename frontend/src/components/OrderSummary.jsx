@@ -1,6 +1,6 @@
 import useCart from "../hooks/useCart";
 
-const OrderSummary = ({ discount }) => {
+const OrderSummary = ({ discount , cartTotal }) => {
   const { totalPrice } = useCart();
 
   const delivery = totalPrice > 2000 ? 0 : 99;
