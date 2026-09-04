@@ -8,6 +8,8 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Orders from "./pages/Orders";
+import OrderSuccess from "./pages/OrderSuccess";
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
                                     </ProtectedRoute>
                                   }
         />
+        <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
+        <Route path="/orders/success" element={<ProtectedRoute><OrderSuccess /></ProtectedRoute>} />
       </Routes>
 
     </BrowserRouter>

@@ -38,6 +38,14 @@ const CheckoutButton = ({ amount }) => {
         if (verification.success) {
           alert("Payment Successful 🎉");
         }
+
+        await createOrder({
+          payment_id: response.razorpay_payment_id,
+          amount: amount / 100,
+          items: cartItems,
+        });
+
+        navigate("/orders/success");
       },
 
       prefill: {
