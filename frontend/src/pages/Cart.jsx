@@ -4,6 +4,7 @@ import CartItem from "../components/CartItem";
 import CouponBox from "../components/CouponBox";
 import OrderSummary from "../components/OrderSummary";
 import CartOffer from "../components/CartOffer";
+import CheckoutButton from "../components/CheckoutButton";
 
 import useCart from "../hooks/useCart";
 import { getCartOffer } from "../data/cartOffers";
@@ -78,6 +79,7 @@ const Cart = () => {
               discount={discount}
               cartTotal={cartTotal}
             />
+            <CheckoutButton amount={cartTotal * 100} />
           </div>
         )}
       </div>

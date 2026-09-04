@@ -1,16 +1,26 @@
-from dotenv import load_dotenv
-import os
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-load_dotenv()
 
-class Settings:
-    APP_NAME = os.getenv("APP_NAME")
-    APP_VERSION = os.getenv("APP_VERSION")
+class Settings(BaseSettings):
+    # App Settings
+    APP_NAME: str = "RazorAgent API"
+    APP_VERSION: str = "1.0.0"
 
-    FRONTEND_URL = os.getenv("FRONTEND_URL")
+    # Gemini
+    GEMINI_API_KEY: str
 
-    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-    RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID")
-    RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET")
+    # Razorpay
+    RAZORPAY_KEY_ID: str
+    RAZORPAY_KEY_SECRET: str
+
+    # Frontend
+    FRONTEND_URL: str = "http://localhost:5173"
+
+    # Pydantic Settings
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        extra="ignore"   # Ignore unknown variables in .env
+    )
+
 
 settings = Settings()

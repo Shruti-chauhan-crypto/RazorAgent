@@ -2,6 +2,7 @@ import google.generativeai as genai
 from app.config import settings
 from app.utils.prompt_templates import SHOPPING_ASSISTANT_PROMPT
 from app.services.recommendation_service import recommend_products
+from app.services.upsell_service import get_bundle_recommendations
 
 genai.configure(api_key=settings.GEMINI_API_KEY)
 model = genai.GenerativeModel("gemini-3.6-flash")
@@ -9,11 +10,13 @@ model = genai.GenerativeModel("gemini-3.6-flash")
 
 def generate_ai_response(user_message: str):
     matched_products = recommend_products(user_message)
+    bundle = get_bundle_recommendations(matched_products)
 
     if not matched_products:
         return {
             "reply": "I couldn't find matching products in our store. Try another category or budget.",
-            "products": []
+            "products": [],
+            "bundle": {}
         }
 
     product_text = "\n".join(
@@ -44,6 +47,7 @@ Give a short shopping recommendation.
         )
 
     return {
-        "reply": reply,
-        "products": matched_products
+        "reply": response.text,
+        "products": matched_products,
+        "bundle": bundle 
     }

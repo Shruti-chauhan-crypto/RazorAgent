@@ -18,7 +18,7 @@ def chat(request: ChatRequest):
             "success": True,
             "reply": data["reply"],
             "products": data["products"],
-            "bundle": data["bundle"]
+            "bundle": data.get("bundle", {}),
         }
 
     except Exception as e:

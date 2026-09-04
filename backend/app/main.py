@@ -5,6 +5,7 @@ from app.config import settings
 from app.routes.health import router as health_router
 from app.routes.ai import router as ai_router
 from app.routes.analytics import router as analytics_router
+from app.routes.payment import router as payment_router
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -25,6 +26,7 @@ app.add_middleware(
 app.include_router(health_router)
 app.include_router(ai_router)
 app.include_router(analytics_router)
+app.include_router(payment_router)
 
 @app.get("/")
 def root():
