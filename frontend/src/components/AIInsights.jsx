@@ -47,7 +47,7 @@ const AIInsights = ({ insights }) => {
       <div className="mb-6 flex items-center gap-3">
         <div className="rounded-xl bg-blue-100 p-3 dark:bg-blue-950/30">
           <FiZap className="text-xl text-blue-600" />
-        </div>
+        </div> 
 
         <div>
           <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
