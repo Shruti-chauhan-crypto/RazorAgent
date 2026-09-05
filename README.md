@@ -75,30 +75,41 @@ Users can ask for product recommendations in natural language (for example, *"Wh
 ```text
 RazorAgent/
 │
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── context/
-│   │   ├── hooks/
-│   │   ├── api/
-│   │   ├── utils/
-│   │   └── data/
-│   ├── package.json
-│   └── vite.config.js
-│
 ├── backend/
 │   ├── app/
 │   │   ├── routes/
 │   │   ├── models/
 │   │   ├── schemas/
 │   │   ├── services/
+│   │   ├── dependencies/
+│   │   ├── utils/
 │   │   ├── config.py
 │   │   └── main.py
+│   ├── venv/
 │   ├── requirements.txt
+|   ├── .gitignore
 │   └── .env
 │
-└── README.md
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── api/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   ├── context/
+│   │   ├── data/
+│   │   ├── hooks/
+│   │   ├── pages/
+│   │   ├── utils/
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── index.css
+│   ├── package.json
+│   ├── vite.config.js
+│   └── .env
+│
+├── docs/
+├── README.md
 ```
 
 ---
