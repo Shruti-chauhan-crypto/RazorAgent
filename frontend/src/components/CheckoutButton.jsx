@@ -1,70 +1,78 @@
-import loadRazorpayScript from "../utils/loadRazorpay";
-import {
-  createPaymentOrder,
-  verifyPayment,
-} from "../api/api";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import useCart from "../hooks/useCart";
 
-const CheckoutButton = ({ amount }) => {
+import { createOrder, verifyPayment } from "../api/api";
+import loadRazorpay from "../utils/loadRazorpay";
+
+const CheckoutButton = () => {
+  const { cartItems, totalPrice, clearCart } = useCart();
+  const [loading, setLoading] = useState(false);
+
   const handleCheckout = async () => {
-    const loaded = await loadRazorpayScript();
+    console.log("🟢 Checkout button clicked");
+    console.log("Razorpay Key:", import.meta.env.VITE_RAZORPAY_KEY_ID);
 
-    if (!loaded) {
-      alert("Failed to load Razorpay.");
+    if (cartItems.length === 0) {
+      toast.error("Your cart is empty.");
       return;
     }
 
-    const payment = await createPaymentOrder(amount);
+    const razorpayLoaded = await loadRazorpay();
+    console.log("Razorpay SDK Loaded:", razorpayLoaded);
 
-    const options = {
-      key: payment.key,
+    if (!razorpayLoaded) {
+      toast.error("Failed to load Razorpay SDK.");
+      return;
+    }
 
-      amount: payment.order.amount,
+    const loadingToast = toast.loading("Preparing secure payment...");
 
-      currency: payment.order.currency,
+    try {
+      const data = await createOrder(totalPrice);
 
-      name: "RazorAgent",
+      console.log("Order Response:", data);
 
-      description: "AI Shopping Checkout",
+      const paymentObject = new window.Razorpay({
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: data.order.amount,
+        currency: data.order.currency,
+        order_id: data.order.id,
+        name: "RazorAgent",
+        description: "AI Shopping Assistant Checkout",
 
-      order_id: payment.order.id,
+        handler: async (response) => {
+          console.log("Payment Success:", response);
 
-      theme: {
-        color: "#2563EB",
-      },
+          await verifyPayment(response);
 
-      handler: async (response) => {
-        const verification = await verifyPayment(response);
+          toast.dismiss(loadingToast);
+          toast.success("Payment Successful 🎉");
+          clearCart();
+        },
 
-        if (verification.success) {
-          alert("Payment Successful 🎉");
-        }
+        theme: {
+          color: "#2563EB",
+        },
+      });
 
-        await createOrder({
-          payment_id: response.razorpay_payment_id,
-          amount: amount / 100,
-          items: cartItems,
-        });
+      toast.dismiss(loadingToast);
+      paymentObject.open();
 
-        navigate("/orders/success");
-      },
-
-      prefill: {
-        name: "Shruti Chauhan",
-        email: "shruti@example.com",
-      },
-    };
-
-    const razorpay = new window.Razorpay(options);
-
-    razorpay.open();
+    } catch (err) {
+      toast.dismiss(loadingToast);
+      console.error("Checkout Error:", err);
+      toast.error("Unable to start payment.");
+    }
   };
 
   return (
     <button
       onClick={handleCheckout}
-      className="w-full rounded-2xl bg-blue-600 py-4 text-white font-semibold hover:bg-blue-700"
+      disabled={loading || cartItems.length === 0}
+      className="w-full rounded-2xl bg-blue-600 px-6 py-4 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
     >
-      Pay ₹{amount / 100}
+      {loading ? "Processing Payment..." : `Pay ₹${totalPrice}`}
     </button>
   );
 };

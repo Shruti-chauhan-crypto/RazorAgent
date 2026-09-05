@@ -1,5 +1,6 @@
 import { FiShoppingCart, FiCreditCard, FiCheckCircle } from "react-icons/fi";
 import useCart from "../hooks/useCart";
+import CheckoutButton from "./CheckoutButton";
 
 const CartPreview = () => {
   const { cartItems } = useCart();
@@ -92,10 +93,7 @@ const CartPreview = () => {
               </div>
 
               {/* Checkout Button */}
-              <button className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 py-3.5 font-semibold text-white shadow-lg shadow-blue-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-blue-600/40">
-                <FiCreditCard />
-                Proceed to Razorpay Checkout
-              </button>
+              <CheckoutButton />
             </>
           )}
         </div>

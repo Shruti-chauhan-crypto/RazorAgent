@@ -33,14 +33,16 @@ export const createPaymentOrder = async (amount) => {
   return response.data;
 };
 
-export const verifyPayment = async (paymentData) => {
-  const response = await api.post("/payment/verify", paymentData);
+export const createOrder = async (amount) => {
+  const response = await api.post("/payment/create-order", {
+    amount: amount * 100, // Razorpay expects paise
+  });
 
   return response.data;
 };
 
-export const createOrder = async (orderData) => {
-  const response = await api.post("/orders/create", orderData);
+export const verifyPayment = async (paymentData) => {
+  const response = await api.post("/payment/verify", paymentData);
   return response.data;
 };
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FiMail, FiLock, FiUser } from "react-icons/fi";
+import toast from "react-hot-toast";
 
 import { signupUser } from "../api/api";
 import useAuth from "../hooks/useAuth";
@@ -33,12 +34,12 @@ const Signup = () => {
     setError("");
 
     if (!form.name || !form.email || !form.password) {
-      setError("Please fill all fields.");
+      toast.error("Please fill all fields.");
       return;
     }
 
     if (form.password.length < 8) {
-      setError("Password must be at least 8 characters.");
+      toast.error("Password must be at least 8 characters.");
       return;
     }
 
@@ -49,10 +50,10 @@ const Signup = () => {
 
       // Save JWT token + user
       login(data.token, data.user);
-
+      toast.success("Merchant Account Created Successfully 🎉");
       navigate("/dashboard");
     } catch (err) {
-      setError(
+      toast.error(
         err.response?.data?.detail ||
           "Signup failed. Please try again."
       );

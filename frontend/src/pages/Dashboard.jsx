@@ -6,11 +6,13 @@ import CategoryChart from "../components/CategoryChart";
 import TopProducts from "../components/TopProducts";
 import AIInsights from "../components/AIInsights";
 import BackendStatus from "../components/BackendStatus";
+import SkeletonCard from "../components/SkeletonCard";
 
 import { getDashboardAnalytics } from "../api/api";
 
 const Dashboard = () => {
   const [analytics, setAnalytics] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadDashboard = async () => {
@@ -19,16 +21,46 @@ const Dashboard = () => {
         setAnalytics(data);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false);   // ✅ Important
       }
     };
 
     loadDashboard();
   }, []);
 
+
+  if (loading) {
+    return (
+      <section className="section-padding bg-[var(--bg)]">
+        <div className="container-custom space-y-8">
+          {/* KPI Skeletons */}
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+          </div>
+
+          {/* Chart Skeletons */}
+          <div className="grid gap-8 lg:grid-cols-2">
+            <SkeletonCard />
+            <SkeletonCard />
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   if (!analytics) {
     return (
       <div className="section-padding text-center">
-        Loading Dashboard...
+        <h2 className="text-2xl font-bold text-red-500">
+          Failed to load dashboard.
+        </h2>
+        <p className="mt-2 text-[var(--text-secondary)]">
+          Please check if the backend is running.
+        </p>
       </div>
     );
   }

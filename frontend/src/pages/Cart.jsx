@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { FiShoppingCart, FiShield, FiTruck } from "react-icons/fi";
 
 import CartItem from "../components/CartItem";
@@ -24,10 +25,10 @@ const Cart = () => {
   const applyCoupon = (code) => {
     if (code.trim().toUpperCase() === "WELCOME10") {
       setDiscount(10);
-      alert("🎉 Coupon Applied! You got 10% OFF.");
+      toast.success("Coupon Applied! 🎉 10% OFF");
     } else {
       setDiscount(0);
-      alert("❌ Invalid Coupon");
+      toast.error("Invalid Coupon Code");
     }
   };
 

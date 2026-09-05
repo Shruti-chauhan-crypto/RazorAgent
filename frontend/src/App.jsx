@@ -10,6 +10,7 @@ import Signup from "./pages/Signup";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Orders from "./pages/Orders";
 import OrderSuccess from "./pages/OrderSuccess";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         />
         <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
         <Route path="/orders/success" element={<ProtectedRoute><OrderSuccess /></ProtectedRoute>} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
 
     </BrowserRouter>

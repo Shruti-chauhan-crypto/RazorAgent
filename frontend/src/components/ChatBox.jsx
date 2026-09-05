@@ -1,118 +1,117 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import toast from "react-hot-toast";
 
 import ChatBubble from "./ChatBubble";
 import MessageInput from "./MessageInput";
 import QuickPrompt from "./QuickPrompt";
 import TypingIndicator from "./TypingIndicator";
+import ProductList from "./ProductList";
 
 import { initialMessages } from "../data/chatData";
-
-import ProductList from "./ProductList";
-import BundleCard from "./BundleCard";
-
 import { chatWithAI } from "../api/api";
 
 const ChatBox = () => {
   const [messages, setMessages] = useState(initialMessages);
   const [typing, setTyping] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [input, setInput] = useState("");
 
-  const handleSend = async (messageText = input) => {
-    if (!messageText.trim()) return;
+  const bottomRef = useRef(null);
 
-    setMessages((prev) => [...prev, { sender: "user", text: messageText }]);
+  // Auto-scroll to latest message
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, typing]);
 
-    setInput("");
-    setLoading(true);
+  // Send Message
+  const handleSend = async (message) => {
+    if (!message.trim()) return;
+
+    // Add user message
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now(),
+        sender: "user",
+        text: message,
+      },
+    ]);
+
+    setTyping(true);
+
+    // Loading toast
+    const loadingToast = toast.loading("RazorAgent is thinking...");
 
     try {
-      const data = await chatWithAI(messageText);
+      const data = await chatWithAI(message);
+
+      toast.dismiss(loadingToast);
 
       setMessages((prev) => [
         ...prev,
         {
-          sender: "ai",
+          id: Date.now() + 1,
+          sender: "bot",
           text: data.reply,
-          products: data.products,
-          bundle: data.bundle,
+          products: data.products || [],
         },
       ]);
     } catch (error) {
-      const message =
-        error.response?.data?.detail || "Something went wrong.";
+      toast.dismiss(loadingToast);
+
+      toast.error("Backend unavailable. Try again later.");
 
       setMessages((prev) => [
         ...prev,
         {
-          sender: "ai",
-          text: message.includes("429")
-            ? "Gemini is temporarily busy. Showing recommendations from our catalog instead."
-            : message,
+          id: Date.now() + 1,
+          sender: "bot",
+          text:
+            "⚠️ Sorry! I'm unable to connect to the AI backend right now. Please try again in a moment.",
         },
       ]);
+
+      console.error(error);
     } finally {
-      setLoading(false);
+      setTyping(false);
     }
   };
 
   return (
-    <div className="m-3 flex h-[84vh] flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl dark:border-slate-800 dark:bg-slate-900">
+    <div className="card flex h-[87vh] flex-col rounded-3xl p-6">
 
-      {/* Chat Header */}
-      <div className="border-b border-slate-200 bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 text-white dark:border-slate-800">
-        <h2 className="text-lg font-bold">🤖 RazorAgent Assistant</h2>
-        <p className="text-sm text-blue-100">
-          Ask for products, bundles, or payment help.
+      {/* Header */}
+      <div className="mb-5 border-b border-[var(--border)] pb-4">
+        <h2 className="text-2xl font-bold text-[var(--text-primary)]">
+          🤖 AI Shopping Assistant
+        </h2>
+
+        <p className="mt-1 text-sm text-[var(--text-secondary)]">
+          Ask RazorAgent for product recommendations, bundles, and shopping advice.
         </p>
       </div>
 
       {/* Quick Prompts */}
-      <div className="border-b border-slate-100 px-5 py-3 dark:border-slate-800">
-        <QuickPrompt onSelect={handleSend} />
-      </div>
+      <QuickPrompt onSelect={handleSend} />
 
-      {/* Messages */}
-      <div className="flex-1 space-y-5 overflow-y-auto bg-slate-50 px-5 py-6 dark:bg-slate-950">
-        {messages.map((message, index) => (
-          <div key={index} className="space-y-4">
+      {/* Chat Messages */}
+      <div className="my-6 flex-1 space-y-5 overflow-y-auto pr-2">
+
+        {messages.map((message) => (
+          <div key={message.id} className="space-y-4">
             <ChatBubble sender={message.sender} text={message.text} />
 
-            {message.products && (
+            {message.products?.length > 0 && (
               <ProductList products={message.products} />
-            )}
-
-            {message.bundle && (
-              <BundleCard bundle={message.bundle} />
             )}
           </div>
         ))}
 
-        {/* Loading Bubble */}
-        {loading && (
-          <div className="flex justify-start">
-            <div className="flex items-center gap-3 rounded-2xl border border-blue-100 bg-white px-4 py-3 shadow-sm dark:border-blue-900/30 dark:bg-slate-900">
-              <div className="h-2 w-2 animate-pulse rounded-full bg-blue-600" />
-              <div className="h-2 w-2 animate-pulse rounded-full bg-blue-600 delay-150" />
-              <div className="h-2 w-2 animate-pulse rounded-full bg-blue-600 delay-300" />
-              <span className="ml-1 text-sm text-slate-600 dark:text-slate-300">
-                RazorAgent is thinking...
-              </span>
-            </div>
-          </div>
-        )}
-
         {typing && <TypingIndicator />}
+
+        <div ref={bottomRef} />
       </div>
 
       {/* Input */}
-      <div className="border-t border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-        <MessageInput
-          input={input}
-          setInput={setInput}
-          onSend={handleSend}
-        />
-      </div>
+      <MessageInput onSend={handleSend} />
     </div>
   );
 };

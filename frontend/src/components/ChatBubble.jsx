@@ -2,7 +2,7 @@ import { FiUser } from 'react-icons/fi';
 import { RiRobot2Line } from 'react-icons/ri';
 
 const ChatBubble = ({ sender, text }) => {
-  const isBot = sender === 'ai';
+  const isBot = sender === 'bot';
 
   return (
     <div className={`flex items-start gap-3 ${isBot ? '' : 'justify-end'}`}>

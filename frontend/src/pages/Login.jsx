@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FiMail, FiLock } from "react-icons/fi";
+import toast from "react-hot-toast";
 
 import { loginUser } from "../api/api";
 import useAuth from "../hooks/useAuth";
@@ -32,7 +33,7 @@ const Login = () => {
     setError("");
 
     if (!form.email || !form.password) {
-      setError("Please enter email and password.");
+      toast.error("Please enter email and password.");
       return;
     }
 
@@ -43,13 +44,15 @@ const Login = () => {
 
       // Save token and user in AuthContext + localStorage
       login(data.token, data.user);
+      toast.success(`Welcome back, ${data.user.name}! 🎉`);
 
       navigate("/dashboard");
     } catch (err) {
-      setError(
+      const message =
         err.response?.data?.detail ||
-          "Invalid email or password."
-      );
+        "Invalid email or password.";
+
+      toast.error(message);
     } finally {
       setLoading(false);
     }
