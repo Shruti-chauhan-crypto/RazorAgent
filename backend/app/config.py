@@ -15,6 +15,7 @@ class Settings(BaseSettings):
 
     # Frontend
     FRONTEND_URL: str = "http://localhost:5173"
+    SECRET_KEY: str = "razoragent_super_secret_key_2026"
 
     # Pydantic Settings
     model_config = SettingsConfigDict(

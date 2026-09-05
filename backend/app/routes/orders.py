@@ -29,7 +29,7 @@ def create_new_order(
 
 # Get Orders
 @router.get("/")
-def fetch_orders(user=Depends(get_current_user)):
+def fetch_orders(current_user=Depends(get_current_user)):
     return {
         "success": True,
         "orders": get_orders()
